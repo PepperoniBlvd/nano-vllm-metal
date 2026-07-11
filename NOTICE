@@ -1,0 +1,7 @@
+nano-vllm-metal
+Copyright 2026 nano-vllm-metal contributors
+
+The C++/Metal extension scaffolding (CMake build, nanobind bindings, build
+script) is derived from the MLX custom-extension example, Copyright (c)
+2023-2024 Apple Inc., licensed under the MIT License.
+    https://github.com/ml-explore/mlx

@@ -1,0 +1,43 @@
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[project]
+name = "nano-vllm-metal"
+version = "0.1.0"
+description = "A minimal, readable vLLM-style LLM inference engine for Apple Silicon, built on MLX with from-scratch Metal kernels."
+requires-python = ">=3.10, <3.13"
+readme = "README.md"
+dependencies = [
+    "mlx>=0.29.1",
+    "torch>=2.6.0",
+    "torchtune>=0.6.1",
+    "torchao>=0.10.0",
+    "mlx-lm>=0.27.1",
+    "numpy>=2.2.4",
+    "pytest>=8.3.5",
+    "ruff>=0.11.6",
+    # this should not usually appear in a project dependency list but we add it to simplify the setup process
+    "setuptools>=62",
+    "nanobind==2.4.0",
+    "pytest-benchmark>=5.1.0",
+]
+
+[tool.pdm.scripts]
+pre_run = { shell = "pdm sync --no-self > /dev/null" }
+build-ext.cmd = "python build.py"
+build-ext.working_dir = "src/nano_vllm_metal/metal"
+clean-ext.cmd = "rm -rf build"
+clean-ext.working_dir = "src/nano_vllm_metal/metal"
+bench-serving.cmd = "python benchmarks/serving_benchmark.py"
+bench-overall.cmd = "python benchmarks/overall_benchmark.py"
+bench-profile.cmd = "python benchmarks/profile_decode.py"
+test.cmd = "pytest tests"
+check-installation.cmd = "python scripts/check-installation.py"
+bench-test.cmd = "pytest benchmarks/kernels"
+format = "ruff format"
+format-cpp.shell = "find src/nano_vllm_metal/metal -type file \\( -name '*.h' -or -name '*.cpp' \\) | xargs -n1 clang-format -i"
+
+[tool.pytest.ini_options]
+addopts = ["--import-mode=importlib"]
+pythonpath = "src"
